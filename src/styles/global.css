@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* .dark クラスでダークモードを切り替える */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Preline UI */
+@source "../../node_modules/preline/dist/*.js";
+@import "../../node_modules/preline/variants.css";
+
+/* Preline Themes */
+@import "../../node_modules/preline/css/themes/theme.css";
