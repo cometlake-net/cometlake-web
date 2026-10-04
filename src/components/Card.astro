@@ -1,0 +1,16 @@
+---
+// src/components/Card.astro
+// 背景画像の上に浮かぶ半透明パネル。見た目だけを持ち、中身の並べ方は使う側で決める。
+import type { HTMLTag } from "astro/types";
+
+interface Props {
+  as?: HTMLTag;
+  class?: string;
+}
+
+const { as: Tag = "div", class: className } = Astro.props;
+---
+
+<Tag class:list={["bg-card/70 backdrop-blur border border-card-line shadow-2xs rounded-xl p-4 md:p-6", className]}>
+  <slot />
+</Tag>
