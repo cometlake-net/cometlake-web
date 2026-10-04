@@ -1,7 +1,10 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import HomeLayout from "../layouts/HomeLayout.astro";
+// 画像を使うときは下の2行を有効にして、背景用 div を <Image> に差し替える
+import { Image } from "astro:assets";
+import bg from "../assets/home/bg.jpg";
 ---
 
-<Layout>
-	<h1 class="text-3xl font-bold">ようこそ</h1>
-</Layout>
+<HomeLayout title="Home" description="ようこそ">
+	<Image src={bg} alt="" class="fixed inset-0 -z-10 size-full object-cover" />
+</HomeLayout>
