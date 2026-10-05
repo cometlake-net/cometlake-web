@@ -1,0 +1,54 @@
+---
+import CommonLayout from "../layouts/CommonLayout.astro";
+import Card from "../components/Card.astro";
+import LinkButton, { type LinkIcon } from "../components/LinkButton.astro";
+import { Image } from "astro:assets";
+import bg from "../assets/home/bg.jpg";
+
+// 仮の URL（あとで自分のアカウントに差し替える）
+const groups: { title: string; links: { label: string; href: string; icon: LinkIcon }[] }[] = [
+  {
+    title: "SNS",
+    links: [
+      { label: "X.com", href: "https://x.com/sakimori_net", icon: "x" },
+      { label: "Discord", href: "https://www.discordapp.com/users/782733161452404807", icon: "discord" },
+      { label: "YouTube", href: "https://www.youtube.com/@cometlake-net", icon: "youtube" },
+    ],
+  },
+  {
+    title: "Games",
+    links: [
+      { label: "Steam", href: "https://steamcommunity.com/profiles/76561199018838135/", icon: "steam" },
+      { label: "VRChat", href: "https://vrchat.com/home/user/usr_ab529e32-d99e-498b-a3ff-1ee2cfea5ae7", icon: "vrchat" },
+    ],
+  },
+  {
+    title: "Dev",
+    links: [
+      { label: "GitHub", href: "https://github.com/cometlake-net", icon: "github" },
+    ],
+  },
+];
+---
+<CommonLayout title="Links" description="Links of cometlake.net">
+  <Image slot="background" src={bg} alt="" class="fixed inset-0 -z-10 size-full object-cover" />
+
+  <Card as="section" class="max-w-xl mx-auto">
+    <h1 class="text-3xl md:text-4xl font-bold text-foreground text-center">Links</h1>
+
+    <div class="mt-8 space-y-8">
+      {groups.map((group) => (
+        <section aria-labelledby={`links-${group.title}`}>
+          <h2 id={`links-${group.title}`} class="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground-1 text-center">
+            {group.title}
+          </h2>
+          <ul class="flex flex-col gap-3">
+            {group.links.map((link) => (
+              <li><LinkButton {...link} /></li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </Card>
+</CommonLayout>
