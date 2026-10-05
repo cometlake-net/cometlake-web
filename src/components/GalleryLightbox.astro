@@ -1,0 +1,102 @@
+---
+// src/components/GalleryLightbox.astro
+// ギャラリー画像の拡大表示。Preline の Overlay（Modal）を1つだけ置き、
+// [data-gallery-item] がクリックされたら画像を差し替えて開く。
+---
+
+<div
+  id="gallery-lightbox"
+  class="hs-overlay hidden size-full fixed top-0 start-0 z-80 overflow-hidden pointer-events-none"
+  role="dialog"
+  tabindex="-1"
+  aria-label="画像の拡大表示"
+  data-hs-overlay-options='{"backdropClasses": "hs-overlay-backdrop transition duration fixed inset-0 bg-black/85"}'
+>
+  <div class="hs-overlay-open:opacity-100 hs-overlay-open:duration-300 opacity-0 transition-all ease-out size-full flex items-center justify-center p-4 sm:p-14">
+    <img
+      id="gallery-lightbox-image"
+      src=""
+      alt=""
+      class="pointer-events-auto max-w-full max-h-full rounded-xl object-contain shadow-2xl"
+    />
+  </div>
+
+  <!-- 閉じる -->
+  <button
+    type="button"
+    class="pointer-events-auto absolute top-3 end-3 size-10 inline-flex justify-center items-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-hidden focus:bg-white/20"
+    aria-label="閉じる"
+    data-hs-overlay="#gallery-lightbox"
+  >
+    <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+  </button>
+
+  <!-- 前へ / 次へ -->
+  <button
+    id="gallery-lightbox-prev"
+    type="button"
+    class="pointer-events-auto absolute start-3 top-1/2 -translate-y-1/2 size-10 inline-flex justify-center items-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-hidden focus:bg-white/20"
+    aria-label="前の画像"
+  >
+    <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+  <button
+    id="gallery-lightbox-next"
+    type="button"
+    class="pointer-events-auto absolute end-3 top-1/2 -translate-y-1/2 size-10 inline-flex justify-center items-center rounded-full bg-white/10 text-white hover:bg-white/20 focus:outline-hidden focus:bg-white/20"
+    aria-label="次の画像"
+  >
+    <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+
+  <!-- 枚数表示 -->
+  <p id="gallery-lightbox-counter" class="absolute bottom-3 inset-x-0 text-center text-sm text-white/80" aria-live="polite"></p>
+</div>
+
+<script>
+  // Preline の Overlay プラグイン（モーダルの開閉・Esc・背景クリック・フォーカス管理）
+  // Preline does not ship TypeScript declarations for this plugin.
+  // @ts-expect-error The plugin is available at runtime.
+  import HSOverlay from "preline/plugins/overlay-non-auto";
+
+  HSOverlay.autoInit();
+
+  const lightbox = document.getElementById("gallery-lightbox");
+  const image = document.getElementById("gallery-lightbox-image") as HTMLImageElement | null;
+  const counter = document.getElementById("gallery-lightbox-counter");
+  const prev = document.getElementById("gallery-lightbox-prev");
+  const next = document.getElementById("gallery-lightbox-next");
+  const items = Array.from(document.querySelectorAll<HTMLElement>("[data-gallery-item]"));
+  let current = 0;
+
+  const show = (index: number) => {
+    if (!image || items.length === 0) return;
+    current = (index + items.length) % items.length;
+    const item = items[current];
+    image.src = item.dataset.fullSrc ?? "";
+    image.alt = item.dataset.alt ?? "";
+    if (counter) counter.textContent = `${current + 1} / ${items.length}`;
+  };
+
+  // 1枚だけなら前後ボタンは出さない
+  if (items.length <= 1) {
+    prev?.classList.add("hidden");
+    next?.classList.add("hidden");
+  }
+
+  items.forEach((item, i) => {
+    item.addEventListener("click", () => {
+      show(i);
+      HSOverlay.open("#gallery-lightbox");
+    });
+  });
+
+  prev?.addEventListener("click", () => show(current - 1));
+  next?.addEventListener("click", () => show(current + 1));
+
+  document.addEventListener("keydown", (e) => {
+    if (!lightbox?.classList.contains("open")) return;
+    if (e.key === "ArrowLeft") show(current - 1);
+    if (e.key === "ArrowRight") show(current + 1);
+  });
+</script>
