@@ -1,10 +1,26 @@
 ---
 import HomeLayout from "../layouts/HomeLayout.astro";
-// 画像を使うときは下の2行を有効にして、背景用 div を <Image> に差し替える
 import { Image } from "astro:assets";
 import bg from "../assets/home/bg.jpg";
+
+const links = [
+	{ href: "/about", label: "About" },
+	{ href: "/gallery", label: "Gallery" },
+	{ href: "/links", label: "Links" },
+];
 ---
 
 <HomeLayout title="Home" description="ようこそ">
 	<Image src={bg} alt="" class="fixed inset-0 -z-10 size-full object-cover" />
+
+	<!-- 左下：サイト名・名前・ナビゲーション（縦並び） -->
+	<div class="fixed bottom-0 left-0 p-6 sm:p-10 flex flex-col gap-1 text-white [text-shadow:0_1px_4px_rgb(0_0_0/0.6)]">
+		<h1 class="text-4xl sm:text-6xl font-semibold">cometlake.net</h1>
+		<p class="text-xl sm:text-2xl mb-4">sakimori</p>
+		<nav class="flex flex-col gap-2">
+			{links.map((link) => (
+				<a class="text-xl sm:text-2xl font-medium hover:opacity-70 focus:outline-hidden focus:opacity-70" href={link.href}>{link.label}</a>
+			))}
+		</nav>
+	</div>
 </HomeLayout>
