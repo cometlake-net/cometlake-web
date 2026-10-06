@@ -4,7 +4,6 @@ import Card from "../components/Card.astro";
 import GalleryLightbox from "../components/GalleryLightbox.astro";
 import { Image, getImage } from "astro:assets";
 import type { ImageMetadata } from "astro";
-import bg from "../assets/home/bg.jpg";
 
 // ベントーグリッドのタイルの大きさ。画像の並び順にこのパターンを繰り返す
 // （large: 2×2 / wide: 2×1 / tall: 1×2 / small: 1×1）
@@ -41,7 +40,6 @@ const photos = await Promise.all(
 );
 ---
 <CommonLayout title="Gallery" description="Gallery of cometlake.net">
-  <Image slot="background" src={bg} alt="" class="fixed inset-0 -z-10 size-full object-cover" />
 
   <Card as="section" class="max-w-5xl mx-auto">
     <h1 class="text-3xl md:text-4xl font-bold text-foreground">Gallery</h1>

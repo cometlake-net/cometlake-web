@@ -2,8 +2,6 @@
 import CommonLayout from "../layouts/CommonLayout.astro";
 import Card from "../components/Card.astro";
 import LinkButton, { type LinkIcon } from "../components/LinkButton.astro";
-import { Image } from "astro:assets";
-import bg from "../assets/home/bg.jpg";
 
 // 仮の URL（あとで自分のアカウントに差し替える）
 const groups: { title: string; links: { label: string; href: string; icon: LinkIcon }[] }[] = [
@@ -31,7 +29,6 @@ const groups: { title: string; links: { label: string; href: string; icon: LinkI
 ];
 ---
 <CommonLayout title="Links" description="Links of cometlake.net">
-  <Image slot="background" src={bg} alt="" class="fixed inset-0 -z-10 size-full object-cover" />
 
   <Card as="section" class="max-w-xl mx-auto">
     <h1 class="text-3xl md:text-4xl font-bold text-foreground text-center">Links</h1>

@@ -23,8 +23,14 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
   </head>
   <body class="min-h-screen flex flex-col bg-background text-foreground">
-    <!-- 背景画像はページ側から slot="background" で差し込む（未指定ならテーマの背景色） -->
-    <slot name="background" />
+    <!-- 背景はページ側から slot="background" で差し替えられる（未指定ならグラデーション） -->
+    <slot name="background">
+      <div class="fixed inset-0 -z-10 bg-linear-to-br from-sky-100 via-indigo-100 to-violet-200 dark:from-slate-950 dark:via-indigo-950 dark:to-violet-950">
+        <!-- 左上と右下にぼんやり光を重ねて奥行きを出す -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,color-mix(in_oklab,var(--color-sky-300)_50%,transparent),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_top_left,color-mix(in_oklab,var(--color-sky-800)_40%,transparent),transparent_60%)]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,color-mix(in_oklab,var(--color-fuchsia-300)_40%,transparent),transparent_60%)] dark:bg-[radial-gradient(ellipse_at_bottom_right,color-mix(in_oklab,var(--color-fuchsia-900)_40%,transparent),transparent_60%)]"></div>
+      </div>
+    </slot>
     <Header />
     <main class="w-full max-w-340 mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
       <slot />

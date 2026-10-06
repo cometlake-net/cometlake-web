@@ -4,7 +4,6 @@ import Card from '../components/Card.astro';
 import { Image } from 'astro:assets';
 // 写真を用意したら下の行を有効にして、profile.photo に設定する
 import photo from '../assets/about/photo.jpg';
-import bg from "../assets/home/bg.jpg";
 
 // 仮の自己紹介文(あとで差し替える)
 const profile = {
@@ -18,8 +17,6 @@ const profile = {
 };
 ---
 <CommonLayout title="About" description="About cometlake.net">
-  <!-- 背景画像を使うときは Home と同じように差し込む -->
-  <Image slot="background" src={bg} alt="" class="fixed inset-0 -z-10 size-full object-cover" />
 
   <Card as="section" class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center sm:items-start gap-6">
     <!-- 写真（未設定のあいだは仮置きのアイコンを表示） -->
