@@ -1,17 +1,46 @@
 ---
 import HomeLayout from "../layouts/HomeLayout.astro";
-import { Image } from "astro:assets";
-import bg from "../assets/home/bg.jpg";
+import { getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
 
 const links = [
 	{ href: "/about", label: "About" },
 	{ href: "/gallery", label: "Gallery" },
 	{ href: "/links", label: "Links" },
 ];
+
+// 背景写真は src/assets/home/bg-pc（横長）と bg-mobile（縦長）に 1 枚ずつ置く。
+// 複数あるときはファイル名順で最初の 1 枚を使い、片方が空ならもう片方で代用する
+const pcModules = import.meta.glob<{ default: ImageMetadata }>(
+	"../assets/home/bg-pc/*.{jpg,jpeg,png,webp,avif}",
+	{ eager: true },
+);
+const mobileModules = import.meta.glob<{ default: ImageMetadata }>(
+	"../assets/home/bg-mobile/*.{jpg,jpeg,png,webp,avif}",
+	{ eager: true },
+);
+
+const firstImage = (modules: Record<string, { default: ImageMetadata }>) =>
+	Object.keys(modules).sort().map((path) => modules[path].default)[0];
+
+// 画面サイズ別の WebP を作る（元画像より大きいサイズは作らない）
+const optimize = (src: ImageMetadata, widths: number[]) =>
+	getImage({ src, widths: [...widths.filter((w) => w < src.width), src.width], format: "webp" });
+
+const pcSrc = firstImage(pcModules) ?? firstImage(mobileModules);
+const mobileSrc = firstImage(mobileModules) ?? pcSrc;
+const pc = pcSrc && (await optimize(pcSrc, [1280, 1920, 2560]));
+const mobile = mobileSrc && (await optimize(mobileSrc, [640, 828, 1080, 1290]));
 ---
 
 <HomeLayout title="Home" description="ようこそ">
-	<Image src={bg} alt="" class="fixed inset-0 -z-10 size-full object-cover" />
+	<!-- 縦長の画面ではモバイル用、それ以外では PC 用の写真を表示する -->
+	{pc && mobile && (
+		<picture>
+			<source media="(orientation: portrait)" srcset={mobile.srcSet.attribute} sizes="100vw" />
+			<img src={pc.src} srcset={pc.srcSet.attribute} sizes="100vw" alt="" fetchpriority="high" class="fixed inset-0 -z-10 size-full object-cover" />
+		</picture>
+	)}
 
 	<!-- 左下：サイト名・名前・ナビゲーション（縦並び） -->
 	<div class="fixed bottom-0 left-0 p-6 sm:p-10 flex flex-col gap-1 text-white [text-shadow:0_1px_4px_rgb(0_0_0/0.6)]">
